@@ -46,7 +46,7 @@ class ForgotPasswordPage(BasePage):
             self.click_element(self.RECOVER_BUTTON)
 
         with allure.step('Проверить переход на страницу восстановление пароля'):
-            self.check_current_url(Url.RESET_PASSWORD)
+            self.check_current_url(Url.RESET_PASSWORD_PAGE)
 
         with allure.step('Кликнуть по кнопке показать/скрыть пароль'):
             self.click_element(self.HIDE_PASSWORD)

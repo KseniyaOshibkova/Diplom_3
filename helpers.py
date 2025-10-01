@@ -27,5 +27,3 @@ class DriverFactory:
             raise WebDriverException(
                 f"Неизвестный браузер: {browser_name}. "
                 f"Доступные варианты: chrome, firefox.")
-
-

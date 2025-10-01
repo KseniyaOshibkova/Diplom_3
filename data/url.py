@@ -1,8 +1,10 @@
 class Url:
     BASE_URL = "https://stellarburgers.nomoreparties.site"
     FORGOT_PASSWORD_PAGE = f"{BASE_URL}/forgot-password"
-    RESET_PASSWORD = f"{BASE_URL}/reset-password"
-
+    RESET_PASSWORD_PAGE = f"{BASE_URL}/reset-password"
+    PROFILE_PAGE = f"{BASE_URL}/account/profile"
+    ORDER_HISTORY_PAGE = f"{BASE_URL}/order - history"
+    LOGIN_PAGE = f"{BASE_URL}/api/auth/login"
 
     CREATE_USER = "/api/auth/register"
     DELETE_USER = "/api/auth/user"

@@ -1,5 +1,7 @@
+import allure
 from selenium.webdriver.common.by import By
 
+from data.url import Url
 from pages.base_page import BasePage
 
 
@@ -8,78 +10,50 @@ class PersonalAccountPage(BasePage):
     PASSWORD_INPUT = (By.CSS_SELECTOR, "input.input__textfield[type='password']")
     LOGIN_BUTTON = (By.XPATH, "//button[text()='Войти']")
     HIDE_PASSWORD = (By.XPATH, "//div[contains(@class,'input__icon-action')]/svg")
-
-
-
-
-
-
-
-
-
-
+    LOGOUT_BUTTON = (By.XPATH, "//button[contains(@class, 'Account_button') and text()='Выход']")
+    ORDER_HISTORY_BUTTON = (By.XPATH, "//a[contains(@class,'Account_link') and text()='История заказов']")
 
 
     def __init__(self, driver):
         super().__init__(driver)
 
-    def fill_generate_email(self):
-        """Заполняет поле email сгенерированным значением"""
-        self.fill_input(self.email_input, Helpers.generate_email())
-        return Helpers.generate_email()
+    def login_user(self, user_data):
+        """Авторизация пользователя с данными из user_data. User_data содержит ключи 'email' и 'password' переданные
+         в фикстуре создания пользователя"""
+        email = user_data["email"]
+        password = user_data["password"]
 
-    def fields_highlighted_red(self, field_locators, expected_hex_color):
-        """Проверяет, что все указанные поля имеют заданный цвет рамки"""
-        self.waiting_for_element(self.warning_error)
-        # Конвертировать HEX в RGB
-        expected_rgb = (f"rgb({int(expected_hex_color[0:2], 16)}, {int(expected_hex_color[2:4], 16)}, "
-                        f"{int(expected_hex_color[4:6], 16)})")
-        # Проверить, что у всех переданных элементов цвет совпадает с ожидаемым
-        for locator in field_locators:
-            elements = self.find_elements(locator)
-            for element in elements:
-                # Получить родительский div
-                parent = element.find_element(*self.parent_element)
-                actual_color = parent.value_of_css_property("border-color")
-                # Сравнить заданный цвет с полученным
-                assert expected_rgb == actual_color
+        with allure.step('Переход по клику на "Личный кабинет"'):
+            self.click_element(self.PERSONAL_ACCOUNT_BUTTON)
 
-    def user_login(self, email, password):
-        """Авторизация пользователя"""
-        self.click_element(self.login_and_registration_button)
-        # Заполнить поля Email и Password
-        self.fill_inputs([
-            (self.email_input, email),
-            (self.password_input, password)])
-        # Кликнуть по кнопке "Войти"
-        self.click_element(self.login_button)
+        with allure.step('Заполнение полей Email и Пароль для авторизации'):
+            self.fill_inputs([
+                (self.EMAIL_INPUT, email),
+                (self.PASSWORD_INPUT, password)])
 
-    def user_logout(self):
-        """Выходит из аккаунта пользователя"""
-        self.click_element(self.logout_button)
+        with allure.step('Клик по кнопке "Войти"'):
+            self.click_element(self.LOGIN_BUTTON)
 
-    def open_registration_form(self):
-        """Открывает форму регистрации"""
-        self.click_element(self.login_and_registration_button)
-        self.click_element(self.no_account_button)
+        with allure.step('Проверить переход на главную страницу'):
+            self.check_current_url(Url.BASE_URL)
 
-    def fill_registration_form_and_create_acc(self, email, password, repeat_password):
-        """Заполяет форму регистрации и кликает создать аккаунт"""
-        self.fill_inputs([
-            (self.email_input, email),
-            (self.password_input, password),
-            (self.repeat_password_input, repeat_password)])
-        self.click_element(self.create_account_button)
 
-    def check_text_error_in_modal_window(self, expected_text):
-        """Проверяет наличие текста Ошибка в модальном окне регистрации"""
-        self.check_text(self.modal_window_authorize, expected_text)
+    def go_personal_account(self):
+        """Переход в личный кабинет пользователя"""
+        with allure.step('Переход по клику на "Личный кабинет"'):
+            self.click_element(self.PERSONAL_ACCOUNT_BUTTON)
+            self.check_current_url(Url.PROFILE_PAGE)
 
-    def fields_autorize_highlighted_red(self, color):
-        """Проверяет подсветку полей email, password, repeat password"""
-        self.fields_highlighted_red([
-            self.email_input, self.password_input, self.repeat_password_input], color)
 
-    def check_display_title_in_modal_window_create(self):
-        """Проверяет отображение заголовка 'Чтобы разместить объявление, авторизуйтесь' в модальном окне"""
-        self.check_display_title_in_modal_window(self.modal_window_authorize, self.pls_login_title)
+    def go_to_order_history(self):
+        """Переход на страницу Истории заказов"""
+        with allure.step('Переход на страницу Истории заказов'):
+            self.click_element(self.ORDER_HISTORY_BUTTON)
+            self.check_current_url(Url.ORDER_HISTORY_PAGE)
+
+
+    def logout_personal_account(self):
+        """Выход из личного кабинета"""
+        with allure.step('Выход из аккаунта'):
+            self.click_element(self.LOGOUT_BUTTON)
+            self.check_current_url(Url.LOGIN_PAGE)
