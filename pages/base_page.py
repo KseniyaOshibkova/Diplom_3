@@ -5,7 +5,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 class BasePage:
     PERSONAL_ACCOUNT_BUTTON = (By.XPATH, "//p[contains(@class,'AppHeader_header') and text()='Личный Кабинет']")
-
+    ORDER_FEED_BUTTON =  (By.XPATH, "//a[contains(@class,'AppHeader_header') and .//p[text()='Лента Заказов']]")
+    CONSTRUCTOR_BUTTON = (By.XPATH, "//a[contains(@class,'AppHeader_header') and .//p[text()='Конструктор']]")
 
     def __init__(self, driver):
         self.driver = driver

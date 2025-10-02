@@ -5,8 +5,10 @@ from api.api_client import ApiClient
 from api.api_user import UserApi
 from data.url import Url
 from helpers import DriverFactory
+from pages.constructor_page import ConstructorPage
 from pages.forgot_password_page import ForgotPasswordPage
 from pages.personal_account_page import PersonalAccountPage
+from pages.order_feed_page import OrderFeedPage
 
 
 def pytest_addoption(parser):
@@ -42,6 +44,16 @@ def user_api(client):
 @pytest.fixture(scope='function', autouse=False)
 def forgot_password(driver):
     return ForgotPasswordPage(driver)
+
+
+@pytest.fixture(scope='function', autouse=False)
+def constructor(driver):
+    return  ConstructorPage(driver)
+
+
+@pytest.fixture(scope='function', autouse=False)
+def order_feed(driver):
+    return OrderFeedPage(driver)
 
 
 @pytest.fixture(scope='function', autouse=False)
