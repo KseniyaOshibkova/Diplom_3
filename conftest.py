@@ -1,3 +1,4 @@
+import allure
 import pytest
 
 import helpers
@@ -5,10 +6,10 @@ from api.api_client import ApiClient
 from api.api_user import UserApi
 from data.url import Url
 from helpers import DriverFactory
-from pages.constructor_page import ConstructorPage
 from pages.forgot_password_page import ForgotPasswordPage
 from pages.personal_account_page import PersonalAccountPage
 from pages.order_feed_page import OrderFeedPage
+from pages.constructor_page import ConstructorPage
 
 
 def pytest_addoption(parser):
@@ -76,3 +77,28 @@ def created_user(user_api):
 
     if token:
         user_api.delete_user(token)
+
+
+@pytest.fixture
+def create_new_order(driver, constructor, order_feed, personal_account, created_user):
+    """Создает новый заказ через UI и возвращает его номер"""
+    with allure.step("Авторизоваться пользователем"):
+        personal_account.login_user(user_data=created_user)
+
+    with allure.step("Перейти в конструктор"):
+        constructor.navigate_to_constructor()
+
+    with allure.step("Добавить ингредиент Spicy-X в корзину"):
+        constructor.drag_ingredient_to_basket()
+
+    with allure.step("Оформить заказ"):
+        constructor.create_order_under_authoriz_user()
+        order_number = constructor.find_element(constructor.ORDER_MODAL).text
+
+    with allure.step("Закрыть окно с идентификатором заказа"):
+        constructor.close_modal_window()
+
+    with allure.step("Перейти в ленту заказов"):
+        constructor.navigate_to_order_feed()
+
+        return str(order_number)

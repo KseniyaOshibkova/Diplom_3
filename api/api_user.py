@@ -16,7 +16,3 @@ class UserApi:
     def delete_user(self, access_token):
         headers = {"authorization": f"{access_token}"}
         return self.client.delete(Url.REFRESH_DATA_USERS, headers=headers)
-
-    def patch_user(self, patch_data, token=None):
-        headers = {"authorization": token} if token else {}
-        return self.client.patch(Url.REFRESH_DATA_USERS, headers=headers, json=patch_data)

@@ -23,15 +23,15 @@ class PersonalAccountPage(BasePage):
         email = user_data["email"]
         password = user_data["password"]
 
-        with allure.step('Переход по клику на "Личный кабинет"'):
+        with allure.step('Перети по клику на "Личный кабинет"'):
             self.click_element(self.PERSONAL_ACCOUNT_BUTTON)
 
-        with allure.step('Заполнение полей Email и Пароль для авторизации'):
+        with allure.step('Заполнить поля Email и Пароль для авторизации'):
             self.fill_inputs([
                 (self.EMAIL_INPUT, email),
                 (self.PASSWORD_INPUT, password)])
 
-        with allure.step('Клик по кнопке "Войти"'):
+        with allure.step('Кликнуть по кнопке "Войти"'):
             self.click_element(self.LOGIN_BUTTON)
 
         with allure.step('Проверить переход на главную страницу'):
@@ -40,20 +40,20 @@ class PersonalAccountPage(BasePage):
 
     def go_personal_account(self):
         """Переход в личный кабинет пользователя"""
-        with allure.step('Переход по клику на "Личный кабинет"'):
+        with allure.step('Перейти по клику на "Личный кабинет"'):
             self.click_element(self.PERSONAL_ACCOUNT_BUTTON)
             self.check_current_url(Url.PROFILE_PAGE)
 
 
     def go_to_order_history(self):
         """Переход на страницу Истории заказов"""
-        with allure.step('Переход на страницу Истории заказов'):
+        with allure.step('Перейти на страницу Истории заказов'):
             self.click_element(self.ORDER_HISTORY_BUTTON)
             self.check_current_url(Url.ORDER_HISTORY_PAGE)
 
 
     def logout_personal_account(self):
         """Выход из личного кабинета"""
-        with allure.step('Выход из аккаунта'):
+        with allure.step('Выйти из аккаунта'):
             self.click_element(self.LOGOUT_BUTTON)
             self.check_current_url(Url.LOGIN_PAGE)

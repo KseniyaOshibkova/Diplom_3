@@ -9,9 +9,8 @@ class ConstructorPage(BasePage):
                           "//a[contains(@class,'BurgerIngredient_ingredient') and .//p[text()='Соус Spicy-X']]")
     MODAL_HEADER = (By.XPATH, "//h2[text()='Детали ингредиента']")
     CLOSE_BUTTON = (By.XPATH, "//button[contains(@class,'Modal_modal__close')]")
-    INGREDIENT_SPICY_X_COUNTER = (By.XPATH,
-        "//a[contains(@class,'BurgerIngredient_ingredient') and .//p[text()='Соус Spicy-X']]//p[contains(@class,"
-        "'counter_counter')]")
+    INGREDIENT_SPICY_X_COUNTER = (By.XPATH, "//a[.//p[text()='Соус Spicy-X']]//div[contains"
+                                            "(@class,'counter_counter')]/p")
     BASKET_AREA = (By.XPATH, "//section[contains(@class,'BurgerConstructor_basket')]")
     ORDER_BUTTON = (By.XPATH, "//button[text()='Оформить заказ']")
     ORDER_MODAL = (By.XPATH, "//p[text()='идентификатор заказа']")
@@ -22,13 +21,13 @@ class ConstructorPage(BasePage):
 
     def navigate_to_order_feed(self):
         """Метод совершает переход на страницу ленты заказов"""
-        with allure.step('Переход по клику на "Лента заказов"'):
+        with allure.step('Перейти по клику на "Лента заказов"'):
             self.click_element(self.ORDER_FEED_BUTTON)
             self.check_current_url(Url.ORDER_FEED_PAGE)
 
     def navigate_to_constructor(self):
         """Метод совершает переход на страницу конструктора"""
-        with allure.step('Переход по клику на "Конструктор"'):
+        with allure.step('Перейти по клику на "Конструктор"'):
             self.click_element(self.CONSTRUCTOR_BUTTON)
             self.check_current_url(Url.BASE_URL)
 
@@ -57,8 +56,10 @@ class ConstructorPage(BasePage):
 
     def drag_ingredient_to_basket(
             self, ingredient_locator=INGREDIENT_SPICY_X, counter_locator=INGREDIENT_SPICY_X_COUNTER):
-        """ Метод перетаскивает ингредиент в область для заказа и проверяет, что счётчик увеличился на 1"""
-        with allure.step('Добавление ингредиента в заказ'):
+        """Метод перетаскивает ингредиент в область для заказа и проверяет, что счётчик увеличился на 1"""
+        with allure.step('Ожидать появление элемента каунтера на странице'):
+            self.waiting_for_element(counter_locator)
+        with allure.step('Добавить ингредиент в заказ'):
             # Получаем текущее значение счётчика
             before_value = int(self.find_element(counter_locator).text)
             # Находим ингредиент и корзину
@@ -67,16 +68,16 @@ class ConstructorPage(BasePage):
             # Перетаскиваем элемент
             self.drag_and_drop(ingredient, basket)
 
-        with allure.step('Проверяем, что элемент появился в корзине'):
+        with allure.step('Проверить, что элемент появился в корзине'):
             self.is_element_in_container(self.BASKET_AREA, ingredient_locator)
 
-        with allure.step('Проверяем, что счётчик увеличился на 1'):
+        with allure.step('Проверить, что счётчик увеличился на 1'):
             assert self.is_counter_incremented_by_one(before_value, counter_locator)
 
 
     def create_order_under_authoriz_user(self):
         """Метод осуществляет клик по кнопке 'Оформить заказ' и проверяет появление идентификатора заказа"""
-        with allure.step('Клик по кнопке "Оформить заказ"'):
+        with allure.step('Кликнуть по кнопке "Оформить заказ"'):
             self.click_element(self.ORDER_BUTTON)
-        with allure.step('Проверка отображения идентификатора заказа'):
+        with allure.step('Проверить отображение идентификатора заказа'):
             self.check_displayed_element(self.ORDER_MODAL)

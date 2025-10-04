@@ -25,12 +25,6 @@ class BasePage:
         return self.driver.current_url == url
 
 
-    def waiting_for_url(self, expected_url):
-        """Ожидает заданный url"""
-        WebDriverWait(self.driver, 10).until(
-            EC.url_to_be(expected_url))
-
-
     def find_elements(self, locator):
         """Ищет элемент по локатору"""
         by, value = locator
@@ -41,11 +35,6 @@ class BasePage:
         """Ищет элемент по локатору"""
         by, value = locator
         return self.driver.find_element(by, value)
-
-
-    def scroll_for_element(self, element):
-        """Скролит до элемиента"""
-        self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
 
 
     def click_element(self, locator, timeout=10):
