@@ -35,25 +35,25 @@ class PersonalAccountPage(BasePage):
             self.click_element(self.LOGIN_BUTTON)
 
         with allure.step('Проверить переход на главную страницу'):
-            self.check_current_url(Url.BASE_URL)
+             assert self.check_current_url(Url.BASE_URL)
 
 
     def go_personal_account(self):
         """Переход в личный кабинет пользователя"""
         with allure.step('Перейти по клику на "Личный кабинет"'):
             self.click_element(self.PERSONAL_ACCOUNT_BUTTON)
-            self.check_current_url(Url.PROFILE_PAGE)
+            assert self.check_current_url(Url.PROFILE_PAGE)
 
 
     def go_to_order_history(self):
         """Переход на страницу Истории заказов"""
         with allure.step('Перейти на страницу Истории заказов'):
             self.click_element(self.ORDER_HISTORY_BUTTON)
-            self.check_current_url(Url.ORDER_HISTORY_PAGE)
+            assert self.check_current_url(Url.ORDER_HISTORY_PAGE)
 
 
     def logout_personal_account(self):
         """Выход из личного кабинета"""
         with allure.step('Выйти из аккаунта'):
             self.click_element(self.LOGOUT_BUTTON)
-            self.check_current_url(Url.LOGIN_PAGE)
+            assert self.check_current_url(Url.LOGIN_PAGE)

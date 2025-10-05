@@ -19,9 +19,9 @@ class BasePage:
             EC.visibility_of_element_located(locator))
         return element
 
-
     def check_current_url(self, url):
         """Проверяет переход на страницу"""
+        WebDriverWait(self.driver, 5).until(EC.url_to_be(url))
         return self.driver.current_url == url
 
 
@@ -83,3 +83,8 @@ class BasePage:
         """Выполняет перетаскивание элемента source в элемент target"""
         action = ActionChains(self.driver)
         action.drag_and_drop(source_element, target_element).perform()
+
+    def scroll_to_element(self, locator):
+        """Скроллит страницу до элемента"""
+        element = self.find_element(locator)
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)

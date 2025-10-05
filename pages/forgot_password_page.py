@@ -23,13 +23,13 @@ class ForgotPasswordPage(BasePage):
         """Открывает страницу восстановления пароля по клику на 'Восстановить пароль'"""
         with allure.step("Перейти на страницу 'Личный кабинет'"):
             self.click_element(self.PERSONAL_ACCOUNT_BUTTON)
-            self.check_current_url(Url.LOGIN_PAGE)
+            assert self.check_current_url(Url.LOGIN_PAGE)
 
         with allure.step("Нажать на кнопку 'Восстановить пароль'"):
             self.click_element(self.FORGOT_PASSWORD_BUTTON)
 
         with allure.step("Проверить, что открыта страница восстановления пароля"):
-            self.check_current_url(Url.FORGOT_PASSWORD_PAGE)
+            assert self.check_current_url(Url.FORGOT_PASSWORD_PAGE)
 
 
     def submit_email_for_recovery(self, email=None):
@@ -42,7 +42,7 @@ class ForgotPasswordPage(BasePage):
             self.click_element(self.RECOVER_BUTTON)
 
         with allure.step("Проверить, что открыта страница сброса пароля"):
-            self.check_current_url(Url.RESET_PASSWORD_PAGE)
+            assert self.check_current_url(Url.RESET_PASSWORD_PAGE)
 
 
     def toggle_password_visibility_and_check_field(self):
@@ -51,4 +51,4 @@ class ForgotPasswordPage(BasePage):
             self.click_element(self.HIDE_PASSWORD)
 
         with allure.step("Проверить, что поле пароля подсветилось"):
-            self.check_displayed_element(self.PASSWORD_FIELD_ACTIVE)
+            assert self.check_displayed_element(self.PASSWORD_FIELD_ACTIVE)
