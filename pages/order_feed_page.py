@@ -69,6 +69,6 @@ class OrderFeedPage(BasePage):
 
     def should_see_new_order_in_progress(self, order_number):
         """Проверяет появление нового заказа в разделе 'В работе'"""
-        time.sleep(3)
+        self.check_displayed_element(self.IN_PROGRESS_ORDER_ITEMS)
         orders = [order.text.splitlines()[-1].strip()[1:] for order in self.find_elements(self.IN_PROGRESS_ORDER_ITEMS)]
         assert order_number in orders
