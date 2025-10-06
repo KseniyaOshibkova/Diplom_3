@@ -13,13 +13,17 @@ class ConstructorPage(BasePage):
                                            "бессмертных моллюсков Protostomia']]")
     INGREDIENT_SHELLFISH_MEAT_COUNTER =(By.XPATH, "//a[.//p[text()='Мясо бессмертных моллюсков Protostomia']]"
                                                   "//div[contains(@class,'counter_counter')]/p")
+    INGREDIENT_BUN = (By.XPATH, "//a[.//p[text()='Флюоресцентная булка R2-D3']]//div[contains"
+                                "(@class,'counter_counter')]/p")
+    INGREDIENT_BUN_COUNTER = (By.XPATH, "//a[.//p[text()='Флюоресцентная булка R2-D3']]//div[contains"
+                                        "(@class,'counter_counter')]/p")
     MODAL_HEADER = (By.XPATH, "//h2[text()='Детали ингредиента']")
     CLOSE_BUTTON = (By.XPATH, "//button[contains(@class,'Modal_modal__close')]")
-
     BASKET_AREA = (By.XPATH, "//section[contains(@class,'BurgerConstructor_basket')]")
     ORDER_BUTTON = (By.XPATH, "//button[text()='Оформить заказ']")
     ORDER_MODAL = (By.XPATH, "//p[text()='идентификатор заказа']")
     ORDER_NUMBER = (By.XPATH, "//h2[contains(@class, 'text_type_digits-large')]")
+
 
     def __init__(self, driver):
         super().__init__(driver)
@@ -52,16 +56,32 @@ class ConstructorPage(BasePage):
 
 
     def is_counter_incremented_by_one(self, before_value, counter_locator=INGREDIENT_SPICY_X_COUNTER):
-        """Метод проверяет, что счётчик увеличился на 1"""
+        """Метод проверяет, что счётчик ингредиента соуса увеличился на 1"""
         with allure.step('Получить текущее значение счетчика ингредиента'):
-            after_value = int(self.find_element(self.INGREDIENT_SPICY_X_COUNTER).text)
+            after_value = int(self.find_element(counter_locator).text)
+        with allure.step('Проверить, что счётчик увеличился на 1'):
+            assert after_value == before_value + 1
+
+
+    def is_counter_bun_incremented_by_one(self, before_value, counter_locator=INGREDIENT_BUN_COUNTER):
+        """Метод проверяет, что счётчик ингредиента соуса увеличился на 1"""
+        with allure.step('Получить текущее значение счетчика ингредиента'):
+            after_value = int(self.find_element(counter_locator).text)
+        with allure.step('Проверить, что счётчик увеличился на 2'):
+            assert after_value == before_value + 2
+
+
+    def is_counter_meet_incremented_by_one(self, before_value, counter_locator=INGREDIENT_SHELLFISH_MEAT_COUNTER):
+        """Метод проверяет, что счётчик ингредиента мяса увеличился на 1"""
+        with allure.step('Получить текущее значение счетчика ингредиента'):
+            after_value = int(self.find_element(counter_locator).text)
         with allure.step('Проверить, что счётчик увеличился на 1'):
             assert after_value == before_value + 1
 
 
     def drag_ingredient_to_basket(
             self, ingredient_locator=INGREDIENT_SPICY_X, counter_locator=INGREDIENT_SPICY_X_COUNTER):
-        """Метод перетаскивает ингредиент в область для заказа и проверяет, что счётчик увеличился на 1"""
+        """Метод перетаскивает ингредиент соус в область для заказа и проверяет, что счётчик увеличился на 1"""
         with allure.step('Ожидать появление элемента каунтера на странице'):
             self.waiting_for_element(counter_locator)
         with allure.step('Добавить ингредиент в заказ'):
@@ -80,16 +100,37 @@ class ConstructorPage(BasePage):
             self.is_counter_incremented_by_one(before_value, counter_locator)
 
 
+    def drag_ingredient_bun_to_basket(
+            self, ingredient_locator=INGREDIENT_BUN, counter_locator=INGREDIENT_BUN_COUNTER):
+        """Метод перетаскивает ингредиент булку в область для заказа и проверяет, что счётчик увеличился на 1"""
+        with allure.step('Ожидать появление элемента каунтера на странице'):
+            self.waiting_for_element(counter_locator)
+        with allure.step('Добавить ингредиент булку в заказ'):
+            # Получаем текущее значение счётчика
+            before_value = int(self.find_element(counter_locator).text)
+            # Находим ингредиент и корзину
+            ingredient = self.find_element(ingredient_locator)
+            basket = self.find_element(self.BASKET_AREA)
+            # Перетаскиваем элемент
+            self.drag_and_drop(ingredient, basket)
+
+        with allure.step('Проверить, что элемент появился в корзине'):
+            assert self.is_element_in_container(self.BASKET_AREA, ingredient_locator)
+
+        with allure.step('Проверить, что счётчик увеличился на 1'):
+            self.is_counter_bun_incremented_by_one(before_value, counter_locator)
+
+
     def drag_ingredient_meet_to_basket(
             self, ingredient_locator=INGREDIENT_SHELLFISH_MEAT, counter_locator=INGREDIENT_SHELLFISH_MEAT_COUNTER):
-        """Метод перетаскивает ингредиент в область для заказа и проверяет, что счётчик увеличился на 1"""
+        """Метод перетаскивает ингредиент начинку в область для заказа и проверяет, что счётчик увеличился на 1"""
         with allure.step('Скроллим до ингредиента'):
             self.scroll_to_element(ingredient_locator)
 
         with allure.step('Получить текущее значение счётчика'):
             before_value = int(self.find_element(counter_locator).text)
 
-        with allure.step('Перетащить ингредиент в корзину'):
+        with allure.step('Перетащить ингредиент мясо в корзину'):
             ingredient = self.find_element(ingredient_locator)
             basket = self.find_element(self.BASKET_AREA)
             self.drag_and_drop(ingredient, basket)
@@ -98,7 +139,7 @@ class ConstructorPage(BasePage):
             assert self.is_element_in_container(self.BASKET_AREA, ingredient_locator)
 
         with allure.step('Проверить, что счётчик увеличился на 1'):
-            self.is_counter_incremented_by_one(before_value, counter_locator)
+            self.is_counter_meet_incremented_by_one(before_value, counter_locator)
 
 
     def create_order_under_authoriz_user(self):
@@ -112,3 +153,7 @@ class ConstructorPage(BasePage):
         """Возвращает номер заказа из модального окна"""
         self.waiting_for_element(self.ORDER_NUMBER)
         return self.find_element(self.ORDER_NUMBER).text
+
+    def wait_for_real_order_number(self, old_number="9999", timeout=20):
+        """Ждёт, пока номер заказа в модальном окне сменится с заглушки на реальный"""
+        self.wait_for_text_change(self.ORDER_NUMBER, old_number, timeout)

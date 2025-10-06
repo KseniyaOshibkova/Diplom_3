@@ -89,11 +89,13 @@ def create_new_order(driver, constructor, order_feed, personal_account, created_
         constructor.navigate_to_constructor()
 
     with allure.step("Добавить ингредиент Spicy-X в корзину"):
+        constructor.drag_ingredient_bun_to_basket()
         constructor.drag_ingredient_to_basket()
         constructor.drag_ingredient_meet_to_basket()
 
     with allure.step("Оформить заказ"):
         constructor.create_order_under_authoriz_user()
+        constructor.wait_for_real_order_number()
         order_number = constructor.get_order_number()
 
     with allure.step("Закрыть окно с идентификатором заказа"):

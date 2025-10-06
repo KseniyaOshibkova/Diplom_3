@@ -8,6 +8,7 @@ class TestBasicFunc:
     @allure.description("Проверить, что авторизованный пользователь может оформить заказ")
     def test_create_order_authorized_user(self, driver, created_user, personal_account, constructor):
         personal_account.login_user(user_data=created_user)
+        constructor.drag_ingredient_bun_to_basket()
         constructor.drag_ingredient_to_basket()
         constructor.drag_ingredient_meet_to_basket()
         constructor.create_order_under_authoriz_user()

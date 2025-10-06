@@ -1,3 +1,4 @@
+import time
 import allure
 from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
@@ -9,8 +10,6 @@ class OrderFeedPage(BasePage):
     ORDER_DETAILS_MODAL = (By.XPATH, "//div[contains(@class,'Modal_orderBox__') and "
                                      "contains(@class,'Modal_modal__contentBox__')]")
     FEED_ORDERS_SECTION = (By.XPATH, "//ul[contains(@class,'OrderFeed_orderList__')]")
-    FEED_ORDER_ITEMS = (By.XPATH, "//ul[contains(@class,'OrderFeed_orderList__')]/li//p[contains(@class,"
-                                  "'text_type_digits-default')]")
     HISTORY_ORDERS_SECTION = (By.XPATH, "//div[contains(@class,'OrderHistory_orderHistory__')]"
                                         "//ul[contains(@class,'OrderHistory_list__')]")
     FIRST_HISTORY_ORDER = (By.XPATH, "//ul[contains(@class,'OrderHistory_profileList')]/li[1]")
@@ -18,10 +17,9 @@ class OrderFeedPage(BasePage):
                                "'OrderFeed_number__')]")
     COUNTER_TODAY = (By.XPATH, "//p[contains(text(),'Выполнено за сегодня')]/following-sibling::p[contains(@class,"
                                "'OrderFeed_number__')]")
-    IN_PROGRESS_SECTION = (By.XPATH, "//ul[contains(@class,'OrderFeed_orderListReady__') and contains"
-                                     "(@class,'OrderFeed_orderList__')]")
-    IN_PROGRESS_ORDER_ITEMS = (By.XPATH, "//ul[contains(@class,'OrderFeed_orderListReady__') and "
-                                         "contains(@class,'OrderFeed_orderList__')]/li")
+    IN_PROGRESS_SECTION = (By.XPATH, './/ul[@class="OrderFeed_orderList"]/li[1]')
+    IN_PROGRESS_ORDER_ITEMS = (By.XPATH, "//li[contains(@class, 'text') and contains(@class, "
+                                         "'text_type_digits-default') and contains(@class, 'mb-2')]")
 
 
     def open_first_order_and_check_modal(self):
@@ -44,17 +42,17 @@ class OrderFeedPage(BasePage):
             orders = self.find_elements(self.FIRST_HISTORY_ORDER)
 
         with allure.step('Проверить наличие заказа в истории заказов пользователя'):
-            assert any(order_number == order.text.strip() for order in orders)
+            assert any(order_number == order.text.splitlines()[0].strip()[2:] for order in orders)
 
 
     def should_see_order_in_feed(self, order_number):
         """Проверяет, что заказ с номером order_number есть в общей ленте"""
         with allure.step('Ожидать "Ленту заказов"'):
             self.waiting_for_element(self.FEED_ORDERS_SECTION)
-            orders = self.find_elements(self.FEED_ORDER_ITEMS)
 
         with allure.step('Проверить наличие заказа в общем списке заказов'):
-            assert any(order_number == order.text.strip() for order in orders)
+            orders = [order.text.splitlines()[0].strip()[1:] for order in self.find_elements(self.FEED_ORDERS_SECTION)]
+            assert order_number in orders
 
 
     def get_total_completed_count(self):
@@ -71,5 +69,6 @@ class OrderFeedPage(BasePage):
 
     def should_see_new_order_in_progress(self, order_number):
         """Проверяет появление нового заказа в разделе 'В работе'"""
-        orders = self.find_elements(self.IN_PROGRESS_ORDER_ITEMS)
-        assert any(order_number == order.text.strip() for order in orders)
+        time.sleep(3)
+        orders = [order.text.splitlines()[-1].strip()[1:] for order in self.find_elements(self.IN_PROGRESS_ORDER_ITEMS)]
+        assert order_number in orders

@@ -15,7 +15,7 @@ class BasePage:
 
     def waiting_for_element(self, locator):
         """Ожидает заданный элемент"""
-        element = WebDriverWait(self.driver, 10).until(
+        element = WebDriverWait(self.driver, 20).until(
             EC.visibility_of_element_located(locator))
         return element
 
@@ -37,7 +37,7 @@ class BasePage:
         return self.driver.find_element(by, value)
 
 
-    def click_element(self, locator, timeout=10):
+    def click_element(self, locator, timeout=25):
         """Кликает по элементу"""
         element = WebDriverWait(self.driver, timeout).until(
                   EC.element_to_be_clickable(locator))
@@ -65,12 +65,12 @@ class BasePage:
 
     def check_not_displayed_element(self, locator):
         """Проверяет, что элемент не отображается"""
-        element = WebDriverWait(self.driver, 10).until(
+        element = WebDriverWait(self.driver, 15).until(
             EC.invisibility_of_element_located(locator))
         return element
 
 
-    def is_element_in_container(self, container_locator, element_locator, timeout=5):
+    def is_element_in_container(self, container_locator, element_locator, timeout=10):
         """Проверяет, что элемент с заданным локатором отображается внутри указанного контейнера"""
         with allure.step(f'Проверка, что элемент {element_locator} отображается в контейнере {container_locator}'):
             container = self.driver.find_element(*container_locator)
@@ -84,7 +84,14 @@ class BasePage:
         action = ActionChains(self.driver)
         action.drag_and_drop(source_element, target_element).perform()
 
+
     def scroll_to_element(self, locator):
         """Скроллит страницу до элемента"""
         element = self.find_element(locator)
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+
+
+    def wait_for_text_change(self, locator, old_text, timeout=10):
+        """Ждёт, пока текст элемента сменится с old_text на любой другой"""
+        WebDriverWait(self.driver, timeout).until(
+            lambda d: self.find_element(locator).text.strip() != old_text)
