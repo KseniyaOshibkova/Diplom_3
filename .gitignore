@@ -1,0 +1,42 @@
+# Общие системные файлы
+.DS_Store
+Thumbs.db
+
+# Виртуальные окружения
+venv/
+.venv/
+env/
+ENV/
+
+# Кеши Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+.eggs/
+.pytest_cache/
+
+# Отчёты Allure
+allure-results/
+allure-report/
+
+# Логи
+*.log
+
+# Тестовые артефакты
+target/
+reports/
+*.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Секреты/настройки
+.env
+*.secret
